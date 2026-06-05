@@ -6,12 +6,12 @@
   <title>Feliz Aniversario</title>
   <style>
     :root {
-      --bg: #121826;
       --paper: #fff8ef;
       --rose: #f36f8f;
       --gold: #f6c85f;
       --mint: #67d6b4;
       --ink: #263043;
+      --wine: #7c3046;
       --soft: rgba(255, 255, 255, 0.72);
     }
 
@@ -25,37 +25,39 @@
       font-family: Arial, Helvetica, sans-serif;
       color: var(--paper);
       background:
-        radial-gradient(circle at 18% 20%, rgba(243, 111, 143, 0.32), transparent 28%),
-        radial-gradient(circle at 82% 12%, rgba(103, 214, 180, 0.28), transparent 30%),
+        radial-gradient(circle at 16% 16%, rgba(243, 111, 143, 0.34), transparent 28%),
+        radial-gradient(circle at 84% 10%, rgba(103, 214, 180, 0.24), transparent 28%),
         linear-gradient(135deg, #121826, #242f49 58%, #151827);
       overflow-x: hidden;
     }
 
     main {
       min-height: 100svh;
-      display: grid;
-      place-items: center;
-      padding: 20px 14px;
+      padding: 20px 14px 34px;
       position: relative;
     }
 
+    .page {
+      width: min(980px, 100%);
+      margin: 0 auto;
+      position: relative;
+      z-index: 2;
+    }
+
     .card {
-      width: 100%;
       background: rgba(255, 248, 239, 0.96);
       color: var(--ink);
       border-radius: 8px;
-      padding: 28px 20px;
+      padding: 24px 18px;
       text-align: center;
       box-shadow: 0 28px 80px rgba(0, 0, 0, 0.36);
-      position: relative;
-      z-index: 2;
     }
 
     .tag {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       color: #80541c;
       font-size: 0.76rem;
       font-weight: 700;
@@ -82,13 +84,52 @@
     .name {
       display: block;
       margin-top: 8px;
-      color: #263043;
+      color: var(--ink);
       font-size: 2rem;
+    }
+
+    .cover-photo {
+      width: min(460px, 100%);
+      margin: 26px auto 0;
+      padding: 10px 10px 32px;
+      background: #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 16px 32px rgba(38, 48, 67, 0.18);
+      transform: rotate(-1.5deg);
+    }
+
+    .photo-frame {
+      position: relative;
+      display: grid;
+      place-items: center;
+      width: 100%;
+      aspect-ratio: 4 / 5;
+      overflow: hidden;
+      border-radius: 4px;
+      background:
+        linear-gradient(135deg, rgba(243, 111, 143, 0.22), rgba(103, 214, 180, 0.22)),
+        #f5e9dd;
+      color: rgba(38, 48, 67, 0.54);
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .photo-frame img {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .photo-label {
+      padding: 16px;
     }
 
     .message {
       margin: 28px auto 0;
-      max-width: 560px;
+      max-width: 620px;
       font-size: 1.05rem;
       line-height: 1.7;
     }
@@ -113,6 +154,54 @@
       font-size: 1.3rem;
     }
 
+    .gallery-section {
+      margin-top: 18px;
+      padding: 24px 0 0;
+    }
+
+    h2 {
+      margin: 0 0 18px;
+      color: var(--wine);
+      font-size: 1.35rem;
+      letter-spacing: 0;
+    }
+
+    .gallery {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    .memory {
+      padding: 9px 9px 18px;
+      background: #ffffff;
+      border-radius: 6px;
+      box-shadow: 0 14px 28px rgba(38, 48, 67, 0.16);
+    }
+
+    .memory:nth-child(2) {
+      transform: rotate(1.2deg);
+    }
+
+    .memory:nth-child(3) {
+      transform: rotate(-1deg);
+    }
+
+    .memory:nth-child(4) {
+      transform: rotate(0.8deg);
+    }
+
+    .memory .photo-frame {
+      aspect-ratio: 1 / 1;
+    }
+
+    .caption {
+      margin: 12px 6px 0;
+      color: #6f4b58;
+      font-size: 0.95rem;
+      line-height: 1.45;
+    }
+
     button {
       border: 0;
       border-radius: 999px;
@@ -135,7 +224,8 @@
 
     .surprise {
       min-height: 58px;
-      margin-top: 22px;
+      margin: 22px auto 0;
+      max-width: 620px;
       color: #725018;
       font-size: 1.05rem;
       line-height: 1.6;
@@ -209,11 +299,10 @@
 
     @media (min-width: 560px) {
       main {
-        padding: 32px 16px;
+        padding: 32px 16px 48px;
       }
 
       .card {
-        width: min(720px, 100%);
         padding: 42px 36px;
       }
 
@@ -238,6 +327,14 @@
         font-size: 1.18rem;
       }
 
+      .gallery {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      h2 {
+        font-size: 1.7rem;
+      }
+
       .balloon {
         width: 54px;
         height: 68px;
@@ -260,6 +357,10 @@
       .name {
         font-size: 4.5rem;
       }
+
+      .gallery {
+        grid-template-columns: repeat(4, 1fr);
+      }
     }
   </style>
 </head>
@@ -270,33 +371,89 @@
   <div class="balloon"></div>
 
   <main>
-    <section class="card" aria-label="Mensagem de feliz aniversario">
-      <div class="tag">Dia especial</div>
-      <h1>
-        Feliz Aniversario
-        <span class="name">Meu Amor!!!</span>
-      </h1>
+    <div class="page">
+      <section class="card" aria-label="Mensagem de feliz aniversario">
+        <div class="tag">Dia especial</div>
+        <h1>
+          Feliz Aniversario
+          <span class="name">Meu Amor!!!</span>
+        </h1>
 
-      <p class="message">
-        Hoje é o seu dia, e eu queria deixar registrado o quanto você é importante.
-        Que sua vida seja sempre cheia de carinho, bençãos, sorrisos sinceros, sonhos bonitos
-        e momentos que façam o coracao ficar leve.
-      </p>
+        <div class="cover-photo">
+          <div class="photo-frame">
+            <span class="photo-label">Nossa foto favorita</span>
+            <img src="fotos/capa.jpg" alt="Foto principal da surpresa" />
+          </div>
+        </div>
 
-      <div class="heart-line"></div>
+        <p class="message">
+          Hoje &eacute; o seu dia, e eu queria deixar registrado o quanto voc&ecirc; &eacute; importante.
+          Que sua vida seja sempre cheia de carinho, ben&ccedil;&atilde;os, sorrisos sinceros, sonhos bonitos
+          e momentos que fa&ccedil;am o coracao ficar leve.
+        </p>
 
-      <button type="button" id="surpriseButton">Abrir mensagem</button>
-      <p class="surprise" id="surpriseText">
-        Voce merece um aniversario lindo, uma vida doce e todos os motivos do mundo para sorrir.
-        Feliz aniversario, com todo carinho!, que esse seja apenas mais um de muitos aniversarios que vamos comemorar juntos,
-         cheios de amor e felicidade.
-      </p>
-    </section>
+        <div class="heart-line"></div>
+
+        <section class="gallery-section" aria-label="Galeria de memorias">
+          <h2>Nossos Momentos</h2>
+
+          <div class="gallery">
+            <article class="memory">
+              <div class="photo-frame">
+                <span class="photo-label">Foto 1</span>
+                <img src="fotos/foto-1.jpg" alt="Primeira lembranca especial" />
+              </div>
+              <p class="caption">Esse dia ficou guardado no meu coracao.</p>
+            </article>
+
+            <article class="memory">
+              <div class="photo-frame">
+                <span class="photo-label">Foto 2</span>
+                <img src="fotos/foto-2.jpg" alt="Segunda lembranca especial" />
+              </div>
+              <p class="caption">Seu sorriso deixa tudo mais bonito.</p>
+            </article>
+
+            <article class="memory">
+              <div class="photo-frame">
+                <span class="photo-label">Foto 3</span>
+                <img src="fotos/foto-3.jpg" alt="Terceira lembranca especial" />
+              </div>
+              <p class="caption">Mais uma lembranca nossa para a vida.</p>
+            </article>
+
+            <article class="memory">
+              <div class="photo-frame">
+                <span class="photo-label">Foto 4</span>
+                <img src="fotos/foto-4.jpg" alt="Quarta lembranca especial" />
+              </div>
+              <p class="caption">Que venham muitos momentos assim.</p>
+            </article>
+          </div>
+        </section>
+
+        <div class="heart-line"></div>
+
+        <button type="button" id="surpriseButton">Abrir mensagem</button>
+        <p class="surprise" id="surpriseText">
+          Voce merece um aniversario lindo, uma vida doce e todos os motivos do mundo para sorrir.
+          Feliz aniversario, com todo carinho!, que esse seja apenas mais um de muitos aniversarios que vamos comemorar juntos,
+          cheios de amor e felicidade.
+        </p>
+      </section>
+    </div>
   </main>
 
   <script>
     const button = document.getElementById("surpriseButton");
     const surprise = document.getElementById("surpriseText");
+    const photos = document.querySelectorAll(".photo-frame img");
+
+    photos.forEach((photo) => {
+      photo.addEventListener("error", () => {
+        photo.remove();
+      });
+    });
 
     button.addEventListener("click", () => {
       surprise.classList.toggle("show");

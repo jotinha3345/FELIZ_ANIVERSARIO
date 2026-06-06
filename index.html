@@ -7,16 +7,24 @@
   <style>
     :root {
       --paper: #fff8ef;
+      --paper-soft: rgba(255, 248, 239, 0.9);
       --rose: #f36f8f;
+      --rose-deep: #b83f61;
       --gold: #f6c85f;
       --mint: #67d6b4;
       --ink: #263043;
       --wine: #7c3046;
+      --night: #121826;
       --soft: rgba(255, 255, 255, 0.72);
+      --glass: rgba(255, 248, 239, 0.76);
     }
 
     * {
       box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
     }
 
     body {
@@ -30,6 +38,133 @@
         linear-gradient(135deg, #121826, #242f49 58%, #151827);
       overflow-x: hidden;
     }
+
+    body.locked {
+      overflow: hidden;
+    }
+
+    button {
+      font-family: inherit;
+    }
+
+    .entry-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 22% 18%, rgba(246, 200, 95, 0.24), transparent 26%),
+        radial-gradient(circle at 78% 24%, rgba(243, 111, 143, 0.3), transparent 28%),
+        linear-gradient(135deg, #111827, #2a1730 58%, #131827);
+      transition: opacity 650ms ease, transform 650ms ease, visibility 650ms ease;
+    }
+
+    .entry-screen.opened {
+      opacity: 0;
+      transform: scale(1.04);
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .entry-content {
+      width: min(620px, 100%);
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      animation: entranceRise 900ms ease both;
+    }
+
+    .entry-kicker {
+      margin: 0 0 12px;
+      color: var(--gold);
+      font-size: 0.8rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+    }
+
+    .entry-title {
+      margin: 0;
+      color: var(--paper);
+      font-size: 2.45rem;
+      line-height: 1.05;
+      letter-spacing: 0;
+    }
+
+    .entry-text {
+      max-width: 520px;
+      margin: 18px auto 26px;
+      color: rgba(255, 248, 239, 0.82);
+      font-size: 1rem;
+      line-height: 1.65;
+    }
+
+    .primary-button,
+    .letter-button,
+    .close-button {
+      border: 0;
+      border-radius: 999px;
+      padding: 14px 22px;
+      width: 100%;
+      max-width: 270px;
+      background: var(--ink);
+      color: white;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      box-shadow: 0 12px 24px rgba(38, 48, 67, 0.24);
+      transition: transform 180ms ease, background 180ms ease, box-shadow 180ms ease;
+    }
+
+    .primary-button {
+      background: linear-gradient(135deg, var(--rose), var(--rose-deep));
+      box-shadow: 0 18px 36px rgba(184, 63, 97, 0.35);
+    }
+
+    .primary-button:hover,
+    .letter-button:hover,
+    .close-button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 18px 36px rgba(38, 48, 67, 0.28);
+    }
+
+    .entry-hearts span,
+    .ambient-hearts span {
+      position: absolute;
+      display: block;
+      color: rgba(255, 248, 239, 0.5);
+      animation: driftHeart linear infinite;
+      pointer-events: none;
+    }
+
+    .entry-hearts span:nth-child(1) { left: 12%; top: 18%; font-size: 1.1rem; animation-duration: 8s; }
+    .entry-hearts span:nth-child(2) { left: 72%; top: 14%; font-size: 1.6rem; animation-duration: 10s; animation-delay: 1s; }
+    .entry-hearts span:nth-child(3) { left: 82%; top: 68%; font-size: 1rem; animation-duration: 7s; animation-delay: 2s; }
+    .entry-hearts span:nth-child(4) { left: 18%; top: 76%; font-size: 1.4rem; animation-duration: 9s; animation-delay: 1.5s; }
+    .entry-hearts span:nth-child(5) { left: 50%; top: 8%; font-size: 0.9rem; animation-duration: 8.5s; animation-delay: 0.5s; }
+
+    .ambient-hearts {
+      position: fixed;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .ambient-hearts span {
+      bottom: -80px;
+      color: rgba(255, 248, 239, 0.28);
+      animation-name: fallHeart;
+    }
+
+    .ambient-hearts span:nth-child(1) { left: 10%; font-size: 1rem; animation-duration: 12s; }
+    .ambient-hearts span:nth-child(2) { left: 27%; font-size: 1.4rem; animation-duration: 15s; animation-delay: 3s; }
+    .ambient-hearts span:nth-child(3) { left: 48%; font-size: 0.95rem; animation-duration: 13s; animation-delay: 1s; }
+    .ambient-hearts span:nth-child(4) { left: 69%; font-size: 1.25rem; animation-duration: 16s; animation-delay: 5s; }
+    .ambient-hearts span:nth-child(5) { left: 88%; font-size: 1rem; animation-duration: 14s; animation-delay: 2s; }
 
     main {
       min-height: 100svh;
@@ -96,6 +231,12 @@
       border-radius: 6px;
       box-shadow: 0 16px 32px rgba(38, 48, 67, 0.18);
       transform: rotate(-1.5deg);
+      transition: transform 220ms ease, box-shadow 220ms ease;
+    }
+
+    .cover-photo:hover {
+      transform: rotate(0deg) translateY(-4px);
+      box-shadow: 0 22px 44px rgba(38, 48, 67, 0.22);
     }
 
     .photo-frame {
@@ -121,6 +262,12 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      transition: transform 350ms ease;
+    }
+
+    .memory:hover img,
+    .cover-photo:hover img {
+      transform: scale(1.06);
     }
 
     .photo-label {
@@ -154,7 +301,9 @@
       font-size: 1.3rem;
     }
 
-    .gallery-section {
+    .gallery-section,
+    .letters-section,
+    .final-section {
       margin-top: 18px;
       padding: 24px 0 0;
     }
@@ -166,7 +315,15 @@
       letter-spacing: 0;
     }
 
-    .gallery {
+    .section-note {
+      max-width: 620px;
+      margin: -8px auto 22px;
+      color: #6f4b58;
+      line-height: 1.6;
+    }
+
+    .gallery,
+    .letters-grid {
       display: grid;
       grid-template-columns: 1fr;
       gap: 16px;
@@ -177,18 +334,16 @@
       background: #ffffff;
       border-radius: 6px;
       box-shadow: 0 14px 28px rgba(38, 48, 67, 0.16);
+      transition: transform 220ms ease, box-shadow 220ms ease;
     }
 
-    .memory:nth-child(2) {
-      transform: rotate(1.2deg);
-    }
+    .memory:nth-child(2) { transform: rotate(1.2deg); }
+    .memory:nth-child(3) { transform: rotate(-1deg); }
+    .memory:nth-child(4) { transform: rotate(0.8deg); }
 
-    .memory:nth-child(3) {
-      transform: rotate(-1deg);
-    }
-
-    .memory:nth-child(4) {
-      transform: rotate(0.8deg);
+    .memory:hover {
+      transform: translateY(-5px) rotate(0deg);
+      box-shadow: 0 20px 38px rgba(38, 48, 67, 0.2);
     }
 
     .memory .photo-frame {
@@ -202,24 +357,64 @@
       line-height: 1.45;
     }
 
-    button {
+    .letter-card {
+      min-height: 150px;
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: 18px;
       border: 0;
-      border-radius: 999px;
-      padding: 14px 22px;
-      width: 100%;
-      max-width: 260px;
-      background: var(--ink);
-      color: white;
-      font-size: 1rem;
-      font-weight: 700;
+      border-radius: 8px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.96), rgba(255, 232, 239, 0.96));
+      color: var(--wine);
       cursor: pointer;
-      box-shadow: 0 12px 24px rgba(38, 48, 67, 0.24);
-      transition: transform 180ms ease, background 180ms ease;
+      box-shadow: 0 14px 28px rgba(38, 48, 67, 0.15);
+      overflow: hidden;
+      transition: transform 220ms ease, box-shadow 220ms ease;
     }
 
-    button:hover {
-      transform: translateY(-2px);
-      background: #35415a;
+    .letter-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(145deg, transparent 49%, rgba(184, 63, 97, 0.12) 50%),
+        linear-gradient(35deg, transparent 49%, rgba(246, 200, 95, 0.18) 50%);
+      transform-origin: top;
+      transition: transform 260ms ease;
+    }
+
+    .letter-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 22px 42px rgba(38, 48, 67, 0.2);
+    }
+
+    .letter-card:hover::before {
+      transform: rotateX(18deg);
+    }
+
+    .letter-card span {
+      position: relative;
+      z-index: 1;
+      font-size: 1rem;
+      font-weight: 700;
+      line-height: 1.35;
+    }
+
+    .final-panel {
+      width: min(680px, 100%);
+      margin: 0 auto;
+      padding: 26px 18px;
+      border-radius: 8px;
+      background:
+        linear-gradient(135deg, rgba(246, 200, 95, 0.22), rgba(243, 111, 143, 0.18)),
+        rgba(255, 255, 255, 0.64);
+      border: 1px solid rgba(124, 48, 70, 0.12);
+    }
+
+    .letter-button {
+      background: var(--ink);
     }
 
     .surprise {
@@ -237,6 +432,91 @@
     .surprise.show {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 70;
+      display: grid;
+      place-items: center;
+      padding: 18px;
+      background: rgba(10, 14, 25, 0.62);
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 220ms ease, visibility 220ms ease;
+    }
+
+    .modal.show {
+      opacity: 1;
+      visibility: visible;
+    }
+
+    .modal-card {
+      width: min(640px, 100%);
+      max-height: min(760px, 88vh);
+      overflow: auto;
+      padding: 26px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.46);
+      border-radius: 8px;
+      background: var(--glass);
+      color: var(--ink);
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.34);
+      transform: translateY(18px) scale(0.96);
+      transition: transform 260ms ease;
+    }
+
+    .modal.show .modal-card {
+      transform: translateY(0) scale(1);
+    }
+
+    .modal-title {
+      margin: 0 0 18px;
+      color: var(--wine);
+      font-size: 1.45rem;
+    }
+
+    .modal-text {
+      margin: 0;
+      color: #344052;
+      font-size: 1.04rem;
+      line-height: 1.7;
+      white-space: pre-line;
+    }
+
+    .paper-letter {
+      position: relative;
+      margin-bottom: 18px;
+      padding: 28px 18px;
+      border-radius: 6px;
+      background: rgba(255, 248, 239, 0.94);
+      box-shadow: inset 0 0 0 1px rgba(124, 48, 70, 0.1);
+      transform-origin: top;
+      animation: openPaper 420ms ease both;
+    }
+
+    .close-button {
+      display: block;
+      margin: 20px auto 0;
+      background: var(--wine);
+    }
+
+    .burst-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 80;
+      pointer-events: none;
+      overflow: hidden;
+    }
+
+    .burst-piece {
+      position: absolute;
+      top: -30px;
+      width: 10px;
+      height: 18px;
+      border-radius: 3px;
+      animation: confettiFall 1500ms ease-in forwards;
     }
 
     .balloon {
@@ -260,46 +540,60 @@
       background: var(--soft);
     }
 
-    .balloon:nth-child(1) {
-      left: 8%;
-      background: var(--rose);
-      animation-duration: 11s;
-      animation-delay: 0s;
+    .balloon:nth-child(1) { left: 8%; background: var(--rose); animation-duration: 11s; animation-delay: 0s; }
+    .balloon:nth-child(2) { left: 24%; background: var(--gold); animation-duration: 13s; animation-delay: 2s; }
+    .balloon:nth-child(3) { left: 72%; background: var(--mint); animation-duration: 12s; animation-delay: 1s; }
+    .balloon:nth-child(4) { left: 88%; background: #8fa7ff; animation-duration: 15s; animation-delay: 4s; }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(24px);
+      transition: opacity 520ms ease, transform 520ms ease;
     }
 
-    .balloon:nth-child(2) {
-      left: 24%;
-      background: var(--gold);
-      animation-duration: 13s;
-      animation-delay: 2s;
+    .reveal.visible {
+      opacity: 1;
+      transform: translateY(0);
     }
 
-    .balloon:nth-child(3) {
-      left: 72%;
-      background: var(--mint);
-      animation-duration: 12s;
-      animation-delay: 1s;
+    @keyframes entranceRise {
+      from { opacity: 0; transform: translateY(18px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    .balloon:nth-child(4) {
-      left: 88%;
-      background: #8fa7ff;
-      animation-duration: 15s;
-      animation-delay: 4s;
+    @keyframes driftHeart {
+      0%, 100% { transform: translateY(0) rotate(-6deg); opacity: 0.48; }
+      50% { transform: translateY(-18px) rotate(8deg); opacity: 0.86; }
+    }
+
+    @keyframes fallHeart {
+      from { transform: translateY(0) rotate(-12deg); opacity: 0; }
+      12% { opacity: 0.52; }
+      to { transform: translateY(-115vh) rotate(18deg); opacity: 0; }
     }
 
     @keyframes floatUp {
-      from {
-        transform: translateY(0) rotate(-4deg);
-      }
-      to {
-        transform: translateY(-125vh) rotate(6deg);
-      }
+      from { transform: translateY(0) rotate(-4deg); }
+      to { transform: translateY(-125vh) rotate(6deg); }
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(540deg); opacity: 0; }
+    }
+
+    @keyframes openPaper {
+      from { opacity: 0; transform: rotateX(18deg) translateY(16px); }
+      to { opacity: 1; transform: rotateX(0deg) translateY(0); }
     }
 
     @media (min-width: 560px) {
       main {
         padding: 32px 16px 48px;
+      }
+
+      .entry-title {
+        font-size: 3.6rem;
       }
 
       .card {
@@ -327,12 +621,21 @@
         font-size: 1.18rem;
       }
 
-      .gallery {
+      .gallery,
+      .letters-grid {
         grid-template-columns: repeat(2, 1fr);
       }
 
       h2 {
         font-size: 1.7rem;
+      }
+
+      .modal-card {
+        padding: 34px 30px;
+      }
+
+      .paper-letter {
+        padding: 36px 30px;
       }
 
       .balloon {
@@ -361,40 +664,73 @@
       .gallery {
         grid-template-columns: repeat(4, 1fr);
       }
+
+      .letters-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
     }
   </style>
 </head>
-<body>
-  <div class="balloon"></div>
-  <div class="balloon"></div>
-  <div class="balloon"></div>
-  <div class="balloon"></div>
+<body class="locked">
+  <section class="entry-screen" id="entryScreen" aria-label="Tela de entrada da surpresa">
+    <div class="entry-hearts" aria-hidden="true">
+      <span>♥</span>
+      <span>♥</span>
+      <span>♥</span>
+      <span>♥</span>
+      <span>♥</span>
+    </div>
+    <div class="entry-content">
+      <p class="entry-kicker">Uma pequena viagem</p>
+      <h2 class="entry-title">Tenho uma surpresa para voc&ecirc; ♥</h2>
+      <p class="entry-text">
+        Clique no bot&atilde;o abaixo e embarque em uma pequena viagem pelas nossas mem&oacute;rias.
+      </p>
+      <button class="primary-button" id="openSurprise" type="button">Abrir Surpresa</button>
+    </div>
+  </section>
 
-  <main>
+  <div class="ambient-hearts" aria-hidden="true">
+    <span>♥</span>
+    <span>♥</span>
+    <span>♥</span>
+    <span>♥</span>
+    <span>♥</span>
+  </div>
+
+  <div class="balloon"></div>
+  <div class="balloon"></div>
+  <div class="balloon"></div>
+  <div class="balloon"></div>
+  <div class="burst-layer" id="burstLayer" aria-hidden="true"></div>
+
+  <main id="mainContent">
     <div class="page">
       <section class="card" aria-label="Mensagem de feliz aniversario">
-        <div class="tag">Dia especial</div>
-        <h1>
-          Feliz Aniversario
-          <span class="name">Meu Amor!!!</span>
-        </h1>
+        <div class="reveal">
+          <div class="tag">Dia especial</div>
+          <h1>
+            Feliz Aniversario
+            <span class="name">Meu Amor!!!</span>
+          </h1>
+        </div>
 
-        <div class="cover-photo">
+        <div class="cover-photo reveal">
           <div class="photo-frame">
             <span class="photo-label">Nossa foto favorita</span>
             <img src="fotos/capa.jpg" alt="Foto principal da surpresa" />
           </div>
         </div>
 
-        <p class="message">
+        <p class="message reveal">
           Hoje &eacute; o seu dia, e eu queria deixar registrado o quanto voc&ecirc; &eacute; importante.
           Que sua vida seja sempre cheia de carinho, ben&ccedil;&atilde;os, sorrisos sinceros, sonhos bonitos
           e momentos que fa&ccedil;am o coracao ficar leve.
         </p>
 
-        <div class="heart-line"></div>
+        <div class="heart-line reveal"></div>
 
-        <section class="gallery-section" aria-label="Galeria de memorias">
+        <section class="gallery-section reveal" aria-label="Galeria de memorias">
           <h2>Nossos Momentos</h2>
 
           <div class="gallery">
@@ -411,7 +747,7 @@
                 <span class="photo-label">Foto 2</span>
                 <img src="fotos/foto-2.jpg" alt="Segunda lembranca especial" />
               </div>
-              <p class="caption">Os momentos com você são sempre melhores.</p>
+              <p class="caption">Os momentos com voc&ecirc; s&atilde;o sempre melhores.</p>
             </article>
 
             <article class="memory">
@@ -432,27 +768,164 @@
           </div>
         </section>
 
-        <div class="heart-line"></div>
+        <div class="heart-line reveal"></div>
 
-        <button type="button" id="surpriseButton">Abrir mensagem</button>
+        <section class="letters-section reveal" aria-label="Cartas para voce">
+          <h2>Cartas para Voc&ecirc;</h2>
+          <p class="section-note">Escolha uma carta e abra quando o cora&ccedil;&atilde;o pedir uma lembran&ccedil;a bonita.</p>
+
+          <div class="letters-grid">
+            <button class="letter-card" type="button" data-letter="happy">
+              <span>Abra quando estiver feliz</span>
+            </button>
+            <button class="letter-card" type="button" data-letter="miss">
+              <span>Abra quando sentir saudade</span>
+            </button>
+            <button class="letter-card" type="button" data-letter="smile">
+              <span>Abra quando precisar de um motivo para sorrir</span>
+            </button>
+          </div>
+        </section>
+
+        <div class="heart-line reveal"></div>
+
+        <button class="letter-button reveal" type="button" id="surpriseButton">Abrir mensagem</button>
         <p class="surprise" id="surpriseText">
           Voce merece um aniversario lindo, uma vida doce e todos os motivos do mundo para sorrir.
           Feliz aniversario, com todo carinho!, que esse seja apenas mais um de muitos aniversarios que vamos comemorar juntos,
           cheios de amor e felicidade.
         </p>
+
+        <section class="final-section reveal" aria-label="Carta final especial">
+          <div class="final-panel">
+            <h2>Carta Final Especial</h2>
+            <p class="section-note">Guardei uma &uacute;ltima carta para fechar essa surpresa com todo carinho.</p>
+            <button class="primary-button" id="finalLetterButton" type="button">Leia minha &uacute;ltima carta ♥</button>
+          </div>
+        </section>
       </section>
     </div>
   </main>
 
+  <div class="modal" id="letterModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal-card">
+      <div class="paper-letter">
+        <h2 class="modal-title" id="modalTitle"></h2>
+        <p class="modal-text" id="modalText"></p>
+      </div>
+      <button class="close-button" type="button" data-close-modal>Fechar carta</button>
+    </div>
+  </div>
+
   <script>
+    const entryScreen = document.getElementById("entryScreen");
+    const openSurprise = document.getElementById("openSurprise");
+    const burstLayer = document.getElementById("burstLayer");
     const button = document.getElementById("surpriseButton");
     const surprise = document.getElementById("surpriseText");
     const photos = document.querySelectorAll(".photo-frame img");
+    const revealItems = document.querySelectorAll(".reveal");
+    const modal = document.getElementById("letterModal");
+    const modalTitle = document.getElementById("modalTitle");
+    const modalText = document.getElementById("modalText");
+    const finalLetterButton = document.getElementById("finalLetterButton");
+
+    const letters = {
+      happy: {
+        title: "Abra quando estiver feliz",
+        text: "Seu sorriso e uma das coisas mais bonitas que ja vi.\nVer voce feliz faz qualquer dia ficar melhor.\nNunca perca essa luz que existe dentro de voce, porque ela ilumina muito mais pessoas do que imagina."
+      },
+      miss: {
+        title: "Abra quando sentir saudade",
+        text: "Mesmo quando nao estamos juntos, voce esta presente nos meus pensamentos.\nCada lembranca nossa e um motivo para sorrir.\nA saudade existe apenas porque existem momentos que valem a pena serem lembrados."
+      },
+      smile: {
+        title: "Abra quando precisar de um motivo para sorrir",
+        text: "Voce e forte, especial e muito mais incrivel do que imagina.\nSe algum dia duvidar disso, lembre-se que existe alguem que admira cada detalhe seu e que torce pela sua felicidade todos os dias."
+      },
+      final: {
+        title: "Minha ultima carta",
+        text: "Meu amor,\n\nHoje e um dia muito especial porque celebramos a pessoa incrivel que voce e.\n\nAo longo do tempo compartilhamos momentos, risadas, desafios e lembrancas que levarei comigo para sempre. Cada instante ao seu lado se tornou uma memoria preciosa.\n\nVoce trouxe mais felicidade para meus dias, mais significado para minhas conquistas e mais beleza para momentos simples que antes passariam despercebidos.\n\nNeste aniversario eu nao desejo apenas que seus sonhos se realizem. Desejo que voce continue sendo essa pessoa maravilhosa, carinhosa, forte e iluminada que faz diferenca na vida de quem tem a sorte de conhece-la.\n\nObrigado por cada sorriso, cada conversa e cada lembranca construida ate aqui.\n\nQue este novo ciclo seja repleto de felicidade, saude, conquistas e momentos inesqueciveis.\n\nFeliz aniversario.\n\nCom todo meu carinho e amor. ♥"
+      }
+    };
+
+    function burst(amount = 34) {
+      const colors = ["#f36f8f", "#f6c85f", "#67d6b4", "#fff8ef", "#8fa7ff"];
+      for (let index = 0; index < amount; index += 1) {
+        const piece = document.createElement("span");
+        piece.className = "burst-piece";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[index % colors.length];
+        piece.style.animationDelay = `${Math.random() * 0.45}s`;
+        piece.style.transform = `rotate(${Math.random() * 180}deg)`;
+        if (index % 4 === 0) {
+          piece.textContent = "♥";
+          piece.style.width = "auto";
+          piece.style.height = "auto";
+          piece.style.background = "transparent";
+          piece.style.color = colors[index % colors.length];
+          piece.style.fontSize = "1.2rem";
+        }
+        burstLayer.appendChild(piece);
+        window.setTimeout(() => piece.remove(), 1900);
+      }
+    }
+
+    function openModal(letterKey) {
+      const letter = letters[letterKey];
+      modalTitle.textContent = letter.title;
+      modalText.textContent = letter.text;
+      modal.classList.add("show");
+      document.body.classList.add("locked");
+      if (letterKey === "final") {
+        burst(46);
+      }
+    }
+
+    function closeModal() {
+      modal.classList.remove("show");
+      if (entryScreen.classList.contains("opened")) {
+        document.body.classList.remove("locked");
+      }
+    }
 
     photos.forEach((photo) => {
       photo.addEventListener("error", () => {
         photo.remove();
       });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    revealItems.forEach((item) => observer.observe(item));
+
+    openSurprise.addEventListener("click", () => {
+      burst(44);
+      entryScreen.classList.add("opened");
+      document.body.classList.remove("locked");
+      window.setTimeout(() => {
+        document.getElementById("mainContent").scrollIntoView({ behavior: "smooth" });
+      }, 300);
+    });
+
+    document.querySelectorAll("[data-letter]").forEach((card) => {
+      card.addEventListener("click", () => openModal(card.dataset.letter));
+    });
+
+    finalLetterButton.addEventListener("click", () => openModal("final"));
+
+    document.querySelector("[data-close-modal]").addEventListener("click", closeModal);
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        closeModal();
+      }
     });
 
     button.addEventListener("click", () => {

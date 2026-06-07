@@ -57,6 +57,10 @@
       transition: opacity 420ms ease, visibility 420ms ease, transform 420ms ease;
     }
 
+    .countdown-screen {
+      z-index: 95;
+    }
+
     .password-screen.unlocked {
       opacity: 0;
       visibility: hidden;
@@ -75,6 +79,10 @@
       box-shadow: 0 28px 80px rgba(0, 0, 0, 0.36);
       backdrop-filter: blur(12px);
       animation: entranceRise 700ms ease both;
+    }
+
+    .countdown-card {
+      width: min(560px, 100%);
     }
 
     .password-card h2 {
@@ -131,6 +139,45 @@
     .password-error.show {
       opacity: 1;
       transform: translateY(0);
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+      margin: 22px 0;
+    }
+
+    .countdown-box {
+      padding: 14px 10px;
+      border-radius: 8px;
+      background: rgba(255, 255, 255, 0.76);
+      box-shadow: inset 0 0 0 1px rgba(124, 48, 70, 0.1);
+    }
+
+    .countdown-number {
+      display: block;
+      color: var(--rose-deep);
+      font-size: 2rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+
+    .countdown-label {
+      display: block;
+      margin-top: 6px;
+      color: #6f4b58;
+      font-size: 0.78rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .countdown-note {
+      margin-top: 18px;
+      color: #80541c;
+      font-size: 0.95rem;
+      font-weight: 700;
     }
 
     button {
@@ -724,6 +771,14 @@
         padding: 34px 30px;
       }
 
+      .countdown-grid {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+
+      .countdown-number {
+        font-size: 2.35rem;
+      }
+
       .paper-letter {
         padding: 36px 30px;
       }
@@ -762,6 +817,34 @@
   </style>
 </head>
 <body class="locked">
+  <section class="password-screen countdown-screen" id="countdownScreen" aria-label="Contagem regressiva para a surpresa">
+    <div class="password-card countdown-card">
+      <h2>Falta pouco para a surpresa</h2>
+      <p>Esse presente abre no dia do seu anivers&aacute;rio, s&aacute;bado, 13 de junho.</p>
+
+      <div class="countdown-grid" aria-label="Tempo restante">
+        <div class="countdown-box">
+          <span class="countdown-number" id="daysLeft">00</span>
+          <span class="countdown-label">Dias</span>
+        </div>
+        <div class="countdown-box">
+          <span class="countdown-number" id="hoursLeft">00</span>
+          <span class="countdown-label">Horas</span>
+        </div>
+        <div class="countdown-box">
+          <span class="countdown-number" id="minutesLeft">00</span>
+          <span class="countdown-label">Minutos</span>
+        </div>
+        <div class="countdown-box">
+          <span class="countdown-number" id="secondsLeft">00</span>
+          <span class="countdown-label">Segundos</span>
+        </div>
+      </div>
+
+      <p class="countdown-note">Quando chegar o dia, a surpresa ser&aacute; liberada automaticamente.</p>
+    </div>
+  </section>
+
   <section class="password-screen" id="passwordScreen" aria-label="Acesso protegido">
     <div class="password-card">
       <h2>Uma data especial</h2>
@@ -929,7 +1012,13 @@
   </div>
 
   <script>
+    const RELEASE_DATE = new Date("2026-06-13T00:00:00-03:00");
     const ACCESS_PASSWORD = "211125";
+    const countdownScreen = document.getElementById("countdownScreen");
+    const daysLeft = document.getElementById("daysLeft");
+    const hoursLeft = document.getElementById("hoursLeft");
+    const minutesLeft = document.getElementById("minutesLeft");
+    const secondsLeft = document.getElementById("secondsLeft");
     const passwordScreen = document.getElementById("passwordScreen");
     const passwordForm = document.getElementById("passwordForm");
     const passwordInput = document.getElementById("passwordInput");
@@ -1022,7 +1111,49 @@
 
     revealItems.forEach((item) => observer.observe(item));
 
-    passwordInput.focus();
+    function pad(value) {
+      return String(value).padStart(2, "0");
+    }
+
+    function unlockCountdown() {
+      countdownScreen.classList.add("unlocked");
+      window.setTimeout(() => {
+        passwordInput.focus();
+      }, 420);
+    }
+
+    function updateCountdown() {
+      const difference = RELEASE_DATE.getTime() - Date.now();
+      if (difference <= 0) {
+        daysLeft.textContent = "00";
+        hoursLeft.textContent = "00";
+        minutesLeft.textContent = "00";
+        secondsLeft.textContent = "00";
+        unlockCountdown();
+        return true;
+      }
+
+      const totalSeconds = Math.floor(difference / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+
+      daysLeft.textContent = pad(days);
+      hoursLeft.textContent = pad(hours);
+      minutesLeft.textContent = pad(minutes);
+      secondsLeft.textContent = pad(seconds);
+      return false;
+    }
+
+    const countdownFinished = updateCountdown();
+    if (!countdownFinished) {
+      const countdownTimer = window.setInterval(() => {
+        if (updateCountdown()) {
+          window.clearInterval(countdownTimer);
+        }
+      }, 1000);
+    }
 
     passwordForm.addEventListener("submit", (event) => {
       event.preventDefault();

@@ -43,6 +43,96 @@
       overflow: hidden;
     }
 
+    .password-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      background:
+        radial-gradient(circle at 22% 20%, rgba(243, 111, 143, 0.28), transparent 28%),
+        radial-gradient(circle at 78% 16%, rgba(246, 200, 95, 0.2), transparent 26%),
+        linear-gradient(135deg, #111827, #25192f 58%, #121826);
+      transition: opacity 420ms ease, visibility 420ms ease, transform 420ms ease;
+    }
+
+    .password-screen.unlocked {
+      opacity: 0;
+      visibility: hidden;
+      transform: scale(1.03);
+      pointer-events: none;
+    }
+
+    .password-card {
+      width: min(440px, 100%);
+      padding: 28px 20px;
+      border: 1px solid rgba(255, 255, 255, 0.34);
+      border-radius: 8px;
+      background: rgba(255, 248, 239, 0.86);
+      color: var(--ink);
+      text-align: center;
+      box-shadow: 0 28px 80px rgba(0, 0, 0, 0.36);
+      backdrop-filter: blur(12px);
+      animation: entranceRise 700ms ease both;
+    }
+
+    .password-card h2 {
+      margin: 0 0 10px;
+      color: var(--wine);
+      font-size: 1.55rem;
+    }
+
+    .password-card p {
+      margin: 0 auto 20px;
+      color: #6f4b58;
+      line-height: 1.55;
+    }
+
+    .password-form {
+      display: grid;
+      gap: 12px;
+      justify-items: center;
+    }
+
+    .password-input {
+      width: 100%;
+      max-width: 260px;
+      border: 1px solid rgba(124, 48, 70, 0.18);
+      border-radius: 999px;
+      padding: 14px 18px;
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--ink);
+      font-size: 1.2rem;
+      font-weight: 700;
+      text-align: center;
+      letter-spacing: 0.18em;
+      outline: none;
+      box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.4);
+      transition: border 180ms ease, box-shadow 180ms ease;
+    }
+
+    .password-input:focus {
+      border-color: rgba(243, 111, 143, 0.72);
+      box-shadow: 0 0 0 4px rgba(243, 111, 143, 0.16);
+    }
+
+    .password-error {
+      min-height: 20px;
+      margin: 0;
+      color: var(--rose-deep);
+      font-size: 0.92rem;
+      font-weight: 700;
+      opacity: 0;
+      transform: translateY(-4px);
+      transition: opacity 180ms ease, transform 180ms ease;
+    }
+
+    .password-error.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     button {
       font-family: inherit;
     }
@@ -672,6 +762,27 @@
   </style>
 </head>
 <body class="locked">
+  <section class="password-screen" id="passwordScreen" aria-label="Acesso protegido">
+    <div class="password-card">
+      <h2>Uma data especial</h2>
+      <p>Digite a senha para abrir essa surpresa guardada com carinho.</p>
+      <form class="password-form" id="passwordForm">
+        <input
+          class="password-input"
+          id="passwordInput"
+          type="password"
+          inputmode="numeric"
+          autocomplete="off"
+          maxlength="6"
+          placeholder="Senha"
+          aria-label="Senha de acesso"
+        />
+        <button class="primary-button" type="submit">Entrar</button>
+        <p class="password-error" id="passwordError">Senha incorreta. Tente de novo.</p>
+      </form>
+    </div>
+  </section>
+
   <section class="entry-screen" id="entryScreen" aria-label="Tela de entrada da surpresa">
     <div class="entry-hearts" aria-hidden="true">
       <span>♥</span>
@@ -818,6 +929,11 @@
   </div>
 
   <script>
+    const ACCESS_PASSWORD = "211125";
+    const passwordScreen = document.getElementById("passwordScreen");
+    const passwordForm = document.getElementById("passwordForm");
+    const passwordInput = document.getElementById("passwordInput");
+    const passwordError = document.getElementById("passwordError");
     const entryScreen = document.getElementById("entryScreen");
     const openSurprise = document.getElementById("openSurprise");
     const burstLayer = document.getElementById("burstLayer");
@@ -905,6 +1021,24 @@
     }, { threshold: 0.12 });
 
     revealItems.forEach((item) => observer.observe(item));
+
+    passwordInput.focus();
+
+    passwordForm.addEventListener("submit", (event) => {
+      event.preventDefault();
+      if (passwordInput.value.trim() === ACCESS_PASSWORD) {
+        passwordError.classList.remove("show");
+        passwordScreen.classList.add("unlocked");
+        window.setTimeout(() => {
+          openSurprise.focus();
+        }, 420);
+        return;
+      }
+
+      passwordInput.value = "";
+      passwordError.classList.add("show");
+      passwordInput.focus();
+    });
 
     openSurprise.addEventListener("click", () => {
       burst(44);
